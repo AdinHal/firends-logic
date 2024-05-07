@@ -34,17 +34,18 @@ friend(george).
 1 { at_activity(W, A, D) : activity(A), weather_activity(W, A) } 1 :- at_day(D), at_weather(D, W).
 
 % Albert's preferences
-can_join(albert, A, D) :-activity(A), day(D), A != bike, D != saturday, not weather(sunny), D != sunday.
+can_join(albert, A, D) :- activity(A), day(D), A != bike, not at_weather(D, sunny), D != sunday.
 join(albert, A, D) :- can_join(albert, A, D), at_activity(W, A, D).
 
 % Basti's preferences
 can_join(basti, A, D) :- activity(A), A != theater, day(D).
 join(basti, A, D) :- can_join(basti, A, D), at_activity(_, A, D).
 
-% Criss preferences
-join(cris, A, D) :- at_day(D), D = sunday, at_activity(_, A, D), not join(albert, A, D).
+% Cris's preferences
+can_join(cris, A, D) :- activity(A), day(D), A != bike.
+join(cris, A, D) :- can_join(cris, A, D), at_activity(_, A, D).
 
-% Daniela
+% Daniela's preferences
 can_join(daniela, A, D) :- activity(A),  day(D), A != theater, D != sunday.
 join(daniela, A, D) :- can_join(daniela, A, D), at_activity(_, A, D).
 
@@ -64,4 +65,4 @@ join(george, A, D) :- can_join(george, A, D), at_activity(_, A, D).
 :- not join(franziska, _, D), not join(cris, _, D), at_day(D).
 
 #show chosen/4.
-chosen(W, A, D, Friend) :- at_weather(D, W), at_activity(W, A, D), join(Friend, A, D).
+chosen(D, W, A, Friend) :- at_weather(D, W), at_activity(W, A, D), join(Friend, A, D).
